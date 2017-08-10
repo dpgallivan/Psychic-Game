@@ -1,55 +1,66 @@
 $(document).ready(function() {
 
-	var options = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"]
-	var wins = 0;
-	var losses = 0;
-	var guessesLeft = 9;
-// not sure if this is correct
-	var guessedLetters = [];
+	var letters = ["a", "b", "c"];
 
-  for(var i=0; i < options.length; i++){
+    var guessedLetters = [];
 
-	document.onkeyup = function() {
+    var letterToGuess = null;
 
-		var userguess = String.fromCharCode(event.keycode).toLowerCase();
-				
-		console.log(userguess);
+    var guessesLeft = 9;
 
-		var computersPrediction = options[Math.floor(Math.random() * options.length)];
-		console.log(computersPrediction);
+    var wins = 0;
+    var losses = 0;
 
-		if (userguess== options && guessesLeft <= 9) {
-			if (userguess == computersPrediction) {
-				win++; 
-				return;
-			}
-		}
-		if (userguess== options && guessesLeft > 9) {
-			if (userguess != computersPrediction) {
-				losses++;
-				return;
-			}
-		}
-		if (userguess && guessesLeft != computersPrediction){
-			guessesLeft--;
-		}
-		if (guessedLetters == options) {
-			system.out.printIn("options");
-			if (guessedLetters > 9) {
-				return;
-			}
-		}
+    var updateGuessesLeft = function() {
+      document.querySelector("#guesses-left").innerHTML = guessesLeft;
+    };
 
-		var html ="<p>Guess what letter I'm thinking of:</p>" + 
-		"<p>Wins: " + Wins + "</p>" +
-		"<p>Losses: " + Losses + "</p>" +
-		"<p>Guesses Left: " + Guesses Left + "</p>" +
-		"<p>Guessed Letters: " + Guessed Letters + "</p>";
+    var updateLetterToGuess = function() {
+      letterToGuess = letters[Math.floor(Math.random() * letters.length)];
+    };
 
-		document.querySelector("#game").innerHTML = html;
-	}
-  }
-});
+    var updateGuessesSoFar = function() {
+      document.querySelector("#guesses-so-far").innerHTML = guessedLetters.join(", ");
+    };
+
+    var reset = function() {
+      guessesLeft = 9;
+      guessedLetters = [];
+      updateLetterToGuess();
+      updateGuessesLeft();
+      updateGuessesSoFar();
+    };
+
+    updateLetterToGuess();
+    updateGuessesLeft();
+
+    document.onkeyup = function(event) {
+      guessesLeft--;
+
+      var letter = String.fromCharCode(event.keyCode).toLowerCase();
+
+      guessedLetters.push(letter);
+
+      updateGuessesLeft();
+      updateGuessesSoFar();
+
+
+      if (letter === letterToGuess) {
+
+        wins++;
+        document.querySelector("#wins").innerHTML = wins;
+
+        reset();
+      }
+
+      if (guessesLeft === 0) {
+
+        losses++;
+        document.querySelector("#losses").innerHTML = losses;
+
+        reset();
+      }
+    };
 
 	
 	
